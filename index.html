@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marksheet Generator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <main class="container">
+        <section class="hero">
+            <p class="tag">C LANGUAGE PROJECT</p>
+            <h1>Marksheet Generator</h1>
+            <p>Enter marks for five subjects and generate a complete marksheet.</p>
+        </section>
+
+        <section class="card">
+            <h2>Enter Subject Marks</h2>
+            <form id="marksForm">
+                <div class="subjects">
+                    <label>Subject 1
+                        <input type="number" min="0" max="100" required>
+                    </label>
+                    <label>Subject 2
+                        <input type="number" min="0" max="100" required>
+                    </label>
+                    <label>Subject 3
+                        <input type="number" min="0" max="100" required>
+                    </label>
+                    <label>Subject 4
+                        <input type="number" min="0" max="100" required>
+                    </label>
+                    <label>Subject 5
+                        <input type="number" min="0" max="100" required>
+                    </label>
+                </div>
+                <button type="submit">Generate Marksheet</button>
+            </form>
+        </section>
+
+        <section class="card result-card hidden" id="result">
+            <div class="result-header">
+                <div>
+                    <p class="tag">RESULT</p>
+                    <h2>Your Marksheet</h2>
+                </div>
+                <span id="status" class="status"></span>
+            </div>
+
+            <div class="marks-list" id="marksList"></div>
+
+            <div class="summary">
+                <div>
+                    <span>Total</span>
+                    <strong id="total"></strong>
+                </div>
+                <div>
+                    <span>Percentage</span>
+                    <strong id="percentage"></strong>
+                </div>
+                <div>
+                    <span>Grade</span>
+                    <strong id="grade"></strong>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <p>Built with C logic + HTML + CSS</p>
+        </footer>
+    </main>
+
+    <script>
+        const form = document.getElementById("marksForm");
+        const result = document.getElementById("result");
+
+        function calculateGrade(percentage) {
+            if (percentage >= 90) return "A";
+            else if (percentage >= 80) return "B";
+            else if (percentage >= 70) return "C";
+            else if (percentage >= 60) return "D";
+            else return "F";
+        }
+
+        form.addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            const inputs = form.querySelectorAll("input");
+            const marks = Array.from(inputs).map(input => Number(input.value));
+
+            const total = marks.reduce((sum, mark) => sum + mark, 0);
+            const percentage = total / 5;
+            const grade = calculateGrade(percentage);
+            const passed = marks.every(mark => mark >= 40);
+
+            document.getElementById("marksList").innerHTML =
+                marks.map((mark, i) =>
+                    `<div><span>Subject ${i + 1}</span><strong>${mark}</strong></div>`
+                ).join("");
+
+            document.getElementById("total").textContent = `${total} / 500`;
+            document.getElementById("percentage").textContent = `${percentage.toFixed(2)}%`;
+            document.getElementById("grade").textContent = grade;
+
+            const status = document.getElementById("status");
+            status.textContent = passed ? "PASS" : "FAIL";
+            status.className = passed ? "status pass" : "status fail";
+
+            result.classList.remove("hidden");
+            result.scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+    </script>
+</body>
+</html>
